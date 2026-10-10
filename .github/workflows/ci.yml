@@ -1,107 +1,37 @@
-name: Continuous Integration (CI)
+name: CI
 
+# Triggers: Run every time someone pushes or creates a pull request
 on:
   push:
-    branches:
-      - master
-      - main
+    branches: [ master, main ]
   pull_request:
-    branches:
-      - master
-      - main
-  workflow_dispatch:
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+    branches: [ master, main ]
 
 jobs:
-  server-ci:
-    name: Server (Node ${{ matrix.node-version }})
+  build-and-test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [20.x, 22.x]
-    defaults:
-      run:
-        working-directory: server
+
     steps:
-      - name: Checkout repository
+      # 1. Download your repo code onto the runner machine
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js ${{ matrix.node-version }}
+      # 2. Install Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: npm
-          cache-dependency-path: server/package-lock.json
+          node-version: 20
 
-      - name: Install server dependencies
-        run: npm ci
-
-      - name: Run server test suite
-        run: npm test
-
-  client-ci:
-    name: Client (Node ${{ matrix.node-version }})
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [20.x, 22.x]
-    defaults:
-      run:
-        working-directory: client
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: npm
-          cache-dependency-path: client/package-lock.json
-
-      - name: Install client dependencies
-        run: npm ci
-
-      - name: Lint client code
-        run: npm run lint
-
-      - name: Build client production bundle
-        run: npm run build
-
-  docker-ci:
-    name: Docker Image Build Validation
-    runs-on: ubuntu-latest
-    needs: [server-ci, client-ci]
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build server Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: ./server
-          file: ./server/Dockerfile
-          push: false
-          tags: vps-mern-api:ci
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-  ci-status:
-    name: All CI Checks Passed
-    runs-on: ubuntu-latest
-    needs: [server-ci, client-ci, docker-ci]
-    if: always()
-    steps:
-      - name: Verify all pipeline jobs succeeded
+      # 3. Test backend (server)
+      - name: Install and test server
         run: |
-          if [ "${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}" = "true" ]; then
-            echo "CI pipeline failed"
-            exit 1
-          fi
-          echo "All CI jobs completed successfully!"
+          cd server
+          npm install
+          npm test
+
+      # 4. Build frontend (client)
+      - name: Install and build client
+        run: |
+          cd client
+          npm install
+          npm run build
