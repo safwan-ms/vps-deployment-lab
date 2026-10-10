@@ -1,37 +1,32 @@
 name: CI
 
-# Triggers: Run every time someone pushes or creates a pull request
 on:
   push:
-    branches: [ master, main ]
+    branches: [master, main]
   pull_request:
-    branches: [ master, main ]
+    branches: [master, main]
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Download your repo code onto the runner machine
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. Install Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      # 3. Test backend (server)
       - name: Install and test server
+        working-directory: server
         run: |
-          cd server
-          npm install
+          npm ci
           npm test
 
-      # 4. Build frontend (client)
       - name: Install and build client
+        working-directory: client
         run: |
-          cd client
-          npm install
+          npm ci
           npm run build
