@@ -135,6 +135,7 @@ export default function App() {
       loadNotes(true);
     }, 15000);
     return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function addNote(e) {
@@ -320,17 +321,18 @@ export default function App() {
           {/* Quick Tag Pills */}
           <div className="tag-picker">
             <span className="tag-picker-label">Tags:</span>
-            {CATEGORY_TAGS.map(({ label, icon: Icon, prefix }) => {
-              const isSelected = text.startsWith(prefix);
+            {CATEGORY_TAGS.map((cat) => {
+              const isSelected = text.startsWith(cat.prefix);
+              const TagIcon = cat.icon;
               return (
                 <button
                   type="button"
-                  key={label}
+                  key={cat.label}
                   className={`tag-chip ${isSelected ? "tag-chip-active" : ""}`}
-                  onClick={() => insertTag(prefix)}
+                  onClick={() => insertTag(cat.prefix)}
                 >
-                  <Icon size={12} />
-                  <span>{label}</span>
+                  <TagIcon size={12} />
+                  <span>{cat.label}</span>
                 </button>
               );
             })}
