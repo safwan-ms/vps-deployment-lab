@@ -1,0 +1,24 @@
+services:
+  api:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    image: pulse-note-backend:dev
+    container_name: pulse-note-backend-dev
+    restart: unless-stopped
+    env_file:
+      - .env.dev
+    ports:
+      - "5000:5000"
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    image: pulse-note-frontend:dev
+    container_name: pulse-note-frontend-dev
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - api

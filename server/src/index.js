@@ -1,7 +1,12 @@
+const path = require("path");
 const dotenv = require("dotenv");
 const { createApp } = require("./app");
 const { connectDb, initAutoReconnect } = require("./db");
 
+// Load environment-specific file (.env.prod or .env.dev) with fallback to default .env
+const envFileName = process.env.NODE_ENV === "production" ? ".env.prod" : ".env.dev";
+dotenv.config({ path: path.resolve(__dirname, "../../", envFileName) });
+dotenv.config({ path: path.resolve(__dirname, "../", envFileName) });
 dotenv.config();
 
 const PORT = process.env.PORT || 5000;

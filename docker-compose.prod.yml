@@ -1,24 +1,18 @@
 services:
   api:
-    build:
-      context: ./server
-      dockerfile: Dockerfile
-    image: mern-api
-    container_name: mern-api
+    image: safwax/pulse-note-backend:latest
+    container_name: pulse-note-backend
     restart: unless-stopped
     env_file:
-      - ./server/.env
+      - .env.prod
     ports:
       - "5000:5000"
 
   client:
-    build:
-      context: ./client
-      dockerfile: Dockerfile
-    image: mern-client
-    container_name: mern-client
+    image: safwax/pulse-note-frontend:latest
+    container_name: pulse-note-frontend
     restart: unless-stopped
     ports:
       - "80:80"
     depends_on:
-      - api
+      - api
