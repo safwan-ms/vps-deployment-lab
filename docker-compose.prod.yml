@@ -3,11 +3,22 @@ services:
     build:
       context: ./server
       dockerfile: Dockerfile
+    image: mern-api
     container_name: mern-api
     restart: unless-stopped
     env_file:
       - ./server/.env
-
-    
     ports:
       - "5000:5000"
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    image: mern-client
+    container_name: mern-client
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - api
