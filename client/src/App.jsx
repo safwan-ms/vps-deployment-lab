@@ -245,9 +245,9 @@ export default function App() {
           <div>
             <div className="brand-title-wrap">
               <h1 className="brand-title">PulseNode</h1>
-              <span className="brand-pill">v1.3 &bull; CI Test 🚀</span>
+              <span className="brand-pill">v1.4 &bull; CD Active 🚀</span>
             </div>
-            <p className="brand-subtitle">VPS Deployment Lab &bull; Micro-Notes Engine &bull; CI Verified</p>
+            <p className="brand-subtitle">VPS Deployment Lab &bull; Micro-Notes Engine &bull; Continuous Deployment Active</p>
           </div>
         </div>
 
@@ -547,7 +547,7 @@ export default function App() {
       <footer className="footer">
         <div className="footer-left">
           <Activity size={14} className="footer-icon" />
-          <span>MERN Cluster Deployment Active &bull; CI Build Verified</span>
+          <span>MERN Cluster Deployment Active &bull; CD Pipeline Verified</span>
         </div>
         <div className="footer-right">
           <span>{notes.length} total entries recorded</span>
